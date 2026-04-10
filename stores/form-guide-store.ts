@@ -1,11 +1,16 @@
 import { create } from 'zustand';
-import type { ChatMessage, CurrentImage } from '@/types/form-guide';
+import type {
+  ChatMessage,
+  CurrentImage,
+  GuideMode,
+} from '@/types/form-guide';
 
 interface FormGuideState {
   currentImage: CurrentImage | null;
   messages: ChatMessage[];
   isAnalyzing: boolean;
   error: string | null;
+  guideMode: GuideMode;
 }
 
 interface FormGuideActions {
@@ -14,6 +19,7 @@ interface FormGuideActions {
   appendMessage: (message: ChatMessage) => void;
   setAnalyzing: (flag: boolean) => void;
   setError: (message: string | null) => void;
+  setGuideMode: (mode: GuideMode) => void;
   reset: () => void;
 }
 
@@ -22,6 +28,7 @@ const INITIAL_STATE: FormGuideState = {
   messages: [],
   isAnalyzing: false,
   error: null,
+  guideMode: 'form',
 };
 
 export const useFormGuideStore = create<FormGuideState & FormGuideActions>(
@@ -34,6 +41,7 @@ export const useFormGuideStore = create<FormGuideState & FormGuideActions>(
       set((state) => ({ messages: [...state.messages, message] })),
     setAnalyzing: (flag) => set({ isAnalyzing: flag }),
     setError: (message) => set({ error: message }),
+    setGuideMode: (mode) => set({ guideMode: mode }),
     reset: () => set({ ...INITIAL_STATE }),
   }),
 );

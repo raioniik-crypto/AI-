@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { detectSensitive } from '@/lib/security/sensitive-detector';
-import { analyzeWithOpenAI } from '@/lib/openai/client';
+import {
+  analyzeWithOpenAI,
+  analyzeOperationWithOpenAI,
+} from '@/lib/openai/client';
 import type { AnalyzeResponse } from '@/types/form-guide';
 
 export const runtime = 'nodejs';
@@ -14,6 +17,7 @@ const RequestSchema = z.object({
       message: 'imageDataUrl must be a data: URL with an image/ MIME type',
     }),
   userText: z.string().min(1, 'userText must not be empty'),
+  guideMode: z.enum(['form', 'operation']).optional().default('form'),
   history: z
     .array(
       z.union([
@@ -52,7 +56,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const { imageDataUrl, userText, history } = parsed.data;
+  const { imageDataUrl, userText, guideMode, history } = parsed.data;
 
   const sensitive = detectSensitive(userText);
   if (sensitive.hasSensitive) {
@@ -67,6 +71,36 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
+    if (guideMode === 'operation') {
+      const result = await analyzeOperationWithOpenAI({
+        imageDataUrl,
+        userText,
+        history,
+      });
+
+      if (result.steps.length === 0 && result.unresolved.length === 0) {
+        return jsonResponse(
+          {
+            ok: false,
+            reason: 'no-target',
+            message:
+              result.summaryJa ||
+              '操作対象が見つかりませんでした。別のスクリーンショットや質問でお試しください。',
+          },
+          200,
+        );
+      }
+
+      return jsonResponse(
+        {
+          ok: true,
+          mode: 'operation',
+          result,
+        },
+        200,
+      );
+    }
+
     const result = await analyzeWithOpenAI({
       imageDataUrl,
       userText,
@@ -89,6 +123,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return jsonResponse(
       {
         ok: true,
+        mode: 'form',
         annotations: result.annotations,
         explanation: result.explanation,
       },

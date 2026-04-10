@@ -1,3 +1,5 @@
+import type { OperationGuideResult } from './operation-guide';
+
 /**
  * Normalized bounding box for an annotation. All values are in the range
  * [0, 1] and represent fractions of the image's width/height.
@@ -32,6 +34,16 @@ export interface CurrentImage {
   height: number;
 }
 
+/**
+ * Which "guide" the user is asking for:
+ *   - `form`      : the original FormGuide — fill a foreign-language form
+ *   - `operation` : the new 画面操作ガイド — point at buttons/menus/files
+ *
+ * Stored in the Zustand store and passed to `/api/analyze` so the server
+ * can dispatch to the matching system prompt + response schema.
+ */
+export type GuideMode = 'form' | 'operation';
+
 export type ChatMessage =
   | { id: string; role: 'user'; text: string }
   | {
@@ -41,22 +53,37 @@ export type ChatMessage =
       annotations: Annotation[];
       explanation: string;
     }
+  | {
+      id: string;
+      role: 'assistant-operation';
+      imageDataUrl: string;
+      result: OperationGuideResult;
+    }
   | { id: string; role: 'system-warning'; detectedCategories: string[] }
   | { id: string; role: 'system-error'; message: string };
 
 export interface AnalyzeRequestBody {
   imageDataUrl: string;
   userText: string;
+  /** Defaults to `'form'` on the server when omitted. */
+  guideMode?: GuideMode;
   history: Array<
     | { role: 'user'; text: string }
     | { role: 'assistant'; explanation: string }
   >;
 }
 
-export interface AnalyzeSuccessResponse {
+export interface AnalyzeFormSuccessResponse {
   ok: true;
+  mode: 'form';
   annotations: Annotation[];
   explanation: string;
+}
+
+export interface AnalyzeOperationSuccessResponse {
+  ok: true;
+  mode: 'operation';
+  result: OperationGuideResult;
 }
 
 export interface AnalyzeSensitiveResponse {
@@ -67,12 +94,13 @@ export interface AnalyzeSensitiveResponse {
 
 export interface AnalyzeErrorResponse {
   ok: false;
-  reason: 'invalid' | 'no-form' | 'upstream' | 'timeout';
+  reason: 'invalid' | 'no-form' | 'no-target' | 'upstream' | 'timeout';
   message: string;
 }
 
 export type AnalyzeResponse =
-  | AnalyzeSuccessResponse
+  | AnalyzeFormSuccessResponse
+  | AnalyzeOperationSuccessResponse
   | AnalyzeSensitiveResponse
   | AnalyzeErrorResponse;
 
