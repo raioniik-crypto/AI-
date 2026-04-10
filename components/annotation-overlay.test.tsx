@@ -28,13 +28,31 @@ const annotations: Annotation[] = [
 ];
 
 describe('<AnnotationOverlay />', () => {
-  it('renders a <svg> with the given viewBox', () => {
+  it('renders a <svg> with matching viewBox, width/height, and preserveAspectRatio="none"', () => {
     const { container } = render(
       <AnnotationOverlay width={1000} height={500} annotations={annotations} />,
     );
     const svg = container.querySelector('svg');
     expect(svg).not.toBeNull();
+    // All four must agree for 1 SVG unit to equal 1 CSS pixel — if they
+    // drift apart, letterboxing re-introduces the rightward bbox shift.
     expect(svg?.getAttribute('viewBox')).toBe('0 0 1000 500');
+    expect(svg?.getAttribute('width')).toBe('1000');
+    expect(svg?.getAttribute('height')).toBe('500');
+    expect(svg?.getAttribute('preserveAspectRatio')).toBe('none');
+  });
+
+  it('aligns bbox rect coordinates exactly with the normalized bbox × render size', () => {
+    const { container } = render(
+      <AnnotationOverlay width={1000} height={500} annotations={annotations} />,
+    );
+    const rect = container.querySelector('rect[data-annotation]');
+    expect(rect).not.toBeNull();
+    // annotation 1: x=0.1 y=0.2 w=0.3 h=0.05 at 1000x500
+    expect(rect?.getAttribute('x')).toBe('100');
+    expect(rect?.getAttribute('y')).toBe('100');
+    expect(rect?.getAttribute('width')).toBe('300');
+    expect(rect?.getAttribute('height')).toBe('25');
   });
 
   it('skips annotations with null bbox', () => {

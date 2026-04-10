@@ -38,8 +38,6 @@ export type ChatMessage =
       id: string;
       role: 'assistant';
       imageDataUrl: string;
-      imageWidth: number;
-      imageHeight: number;
       annotations: Annotation[];
       explanation: string;
     }

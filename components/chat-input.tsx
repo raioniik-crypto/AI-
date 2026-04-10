@@ -65,8 +65,6 @@ export default function ChatInput(): JSX.Element {
           id: createId(),
           role: 'assistant',
           imageDataUrl: currentImage.dataUrl,
-          imageWidth: currentImage.width,
-          imageHeight: currentImage.height,
           annotations: data.annotations,
           explanation: data.explanation,
         });
