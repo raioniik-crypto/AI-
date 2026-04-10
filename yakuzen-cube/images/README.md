@@ -20,10 +20,10 @@
 yakuzen-cube/
 ├── index.html
 └── images/
-    ├── leaflet-cover.jpg
-    ├── leaflet-info.jpg
-    ├── leaflet-herbs.jpg
-    └── leaflet-concept.jpg
+    ├── ![leaflet-cover](https://github.com/user-attachments/assets/92897ebe-5490-490d-99c3-97f7e539eacb)
+    ├── ![leaflet-info](https://github.com/user-attachments/assets/9f44a4ff-48f0-484a-953c-c0371c973d8d)
+    ├── ![leaflet-herbs](https://github.com/user-attachments/assets/cc44f46e-27c2-4a8a-8574-cb56c19aab27)
+    └── ![leaflet-info](https://github.com/user-attachments/assets/22ea2738-4a95-4675-922e-16546e52c9fc)
 ```
 
 HTML 側の `<img src="./images/xxx.jpg">` は変更不要。ブラウザをリロードすれば
