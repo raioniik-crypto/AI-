@@ -1,6 +1,7 @@
 import type { ChatMessage as ChatMessageType } from '@/types/form-guide';
 import AnnotatedImage from './annotated-image';
 import AnnotationLegend from './annotation-legend';
+import OperationResultMessage from './operation-result-message';
 import SensitiveWarning from './sensitive-warning';
 
 interface ChatMessageProps {
@@ -28,6 +29,15 @@ export default function ChatMessage({ message }: ChatMessageProps): JSX.Element 
         <p className="text-sm text-slate-700">{message.explanation}</p>
         <AnnotationLegend annotations={message.annotations} />
       </div>
+    );
+  }
+
+  if (message.role === 'assistant-operation') {
+    return (
+      <OperationResultMessage
+        imageDataUrl={message.imageDataUrl}
+        result={message.result}
+      />
     );
   }
 

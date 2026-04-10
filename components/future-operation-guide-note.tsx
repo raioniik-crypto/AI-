@@ -1,12 +1,10 @@
 import { Compass } from 'lucide-react';
 
 /**
- * Tiny "coming soon" teaser for the planned 画面操作ガイド feature.
- *
- * This is intentionally not interactive and doesn't own any state — it
- * just plants a flag so users know the tool's direction is broader than
- * form-filling. Replace with the real entry point when the follow-on
- * feature lands.
+ * Small hint card explaining the 画面操作ガイド mode. Shown under the
+ * dropzone so first-time users know the tool isn't just for form
+ * filling — they can flip the top toggle to get clickable-element
+ * guidance instead.
  */
 export default function FutureOperationGuideNote(): JSX.Element {
   return (
@@ -18,12 +16,14 @@ export default function FutureOperationGuideNote(): JSX.Element {
       <div className="flex-1 text-[11px] leading-relaxed text-slate-600">
         <div className="flex items-center gap-1.5">
           <span className="font-semibold text-slate-700">画面操作ガイド</span>
-          <span className="rounded-full bg-slate-200 px-1.5 py-0.5 text-[9px] font-medium uppercase text-slate-600">
-            beta / 準備中
+          <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-medium uppercase text-amber-700">
+            beta
           </span>
         </div>
         <p className="mt-0.5">
-          外国語サイトや開発ツール画面で、「どこを押すか」「どのファイルを開くか」「次に何をするか」を案内するモードを準備中です。
+          外国語サイトや開発ツール画面で「どこを押すか」「どのファイルを開くか」「次に何をするか」を案内します。上の
+          <span className="mx-1 font-medium text-slate-700">画面操作ガイド</span>
+          に切り替えてお試しください。
         </p>
       </div>
     </aside>
