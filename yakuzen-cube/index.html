@@ -308,6 +308,24 @@
   .cta:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(184, 55, 44, .4); }
   .cta::after { content: "→"; }
 
+  .alt-lp-link {
+    display: inline-block;
+    margin-left: 14px;
+    font-size: 12px;
+    color: var(--dp-muted);
+    letter-spacing: .06em;
+    border-bottom: 1px dashed var(--dp-tan);
+    padding-bottom: 2px;
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .alt-lp-link:hover {
+    color: var(--dp-red);
+    border-color: var(--dp-red);
+  }
+  @media (max-width: 560px) {
+    .alt-lp-link { display: block; margin: 12px 0 0; }
+  }
+
   /* Section title */
   .section-title {
     text-align: center;
@@ -1151,6 +1169,7 @@
           <span class="tax">税込 ／ 内容量 35g</span>
         </div>
         <a href="#" class="cta">詳しくはこちら</a>
+        <a href="./lp-elegant.html" class="alt-lp-link">別デザイン版 LP を見る →</a>
       </div>
     </section>
 
