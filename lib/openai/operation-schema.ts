@@ -1,5 +1,22 @@
 import { z } from 'zod';
-import type { OperationGuideResult } from '@/types/operation-guide';
+import type {
+  OperationGuideResult,
+  OperationSanitizerTrace,
+  OperationStepAdjustment,
+} from '@/types/operation-guide';
+
+/**
+ * Area (as a fraction of the 0–1000 canvas) above which we cut the
+ * model's confidence. These thresholds were chosen based on the Phase 1
+ * verification where GPT-4o returned wrongly-big bboxes for GitHub
+ * file-list rows — tight click targets normally occupy well under 10%
+ * of the visible canvas, so anything > 30% is already suspicious and
+ * > 50% is almost certainly wrong.
+ */
+export const AREA_SOFT_THRESHOLD = 0.3;
+export const AREA_HARD_THRESHOLD = 0.5;
+export const AREA_SOFT_MULTIPLIER = 0.5;
+export const AREA_HARD_MULTIPLIER = 0.3;
 
 /**
  * Max number of steps the UI will render. The model is prompted to
@@ -120,18 +137,41 @@ export const OPERATION_GUIDE_JSON_SCHEMA = {
  * the number of steps at `MAX_OPERATION_STEPS` and confidence into
  * [0, 1]. Unresolved and warnings pass through unchanged.
  *
- * Phase 1.5 hardening: if the model returns a 0–1 normalized bbox
- * (instead of the 0–1000 we asked for), `needsBboxRescale` detects it
- * and the values are multiplied by 1000 before clamping. Legit 0–1000
- * rects cannot all have max ≤ 1 without being broken zero-area boxes,
- * so the heuristic is safe.
+ * Phase 1.5 hardening:
+ *   - If the model returns a 0–1 normalized bbox (instead of the
+ *     0–1000 we asked for), `needsBboxRescale` detects it and the
+ *     values are multiplied by 1000 before clamping. Legit 0–1000
+ *     rects cannot all have max ≤ 1 without being broken zero-area
+ *     boxes, so the heuristic is safe.
+ *
+ * Phase 1.5.1 hardening (PP1 area-based downgrade):
+ *   - Steps whose clamped bbox covers more than `AREA_SOFT_THRESHOLD`
+ *     of the canvas get their `confidence` multiplied by
+ *     `AREA_SOFT_MULTIPLIER`, and > `AREA_HARD_THRESHOLD` by
+ *     `AREA_HARD_MULTIPLIER`. The raw box is preserved — only the
+ *     confidence is changed — so the UI can still render the step but
+ *     display a "自信度低め" marker. This catches the observed symptom
+ *     where the model returns a roughly-right but too-wide rectangle
+ *     over empty whitespace.
+ *
+ * A trace object is also returned so `/api/analyze` can surface a
+ * dev-only debug payload.
  */
 export function sanitizeOperationGuideResult(
   result: ValidatedOperationGuideResult,
 ): OperationGuideResult {
-  const scale = needsBboxRescale(result.steps) ? 1000 : 1;
+  return sanitizeOperationGuideResultWithTrace(result).result;
+}
+
+export function sanitizeOperationGuideResultWithTrace(
+  result: ValidatedOperationGuideResult,
+): { result: OperationGuideResult; trace: OperationSanitizerTrace } {
+  const rescaled = needsBboxRescale(result.steps);
+  const scale = rescaled ? 1000 : 1;
 
   const steps: OperationGuideResult['steps'] = [];
+  const stepAdjustments: OperationStepAdjustment[] = [];
+
   for (const step of result.steps) {
     const x = clamp(step.x * scale, 0, 1000);
     const y = clamp(step.y * scale, 0, 1000);
@@ -139,7 +179,52 @@ export function sanitizeOperationGuideResult(
     const maxH = Math.max(0, 1000 - y);
     const width = clamp(step.width * scale, 0, maxW);
     const height = clamp(step.height * scale, 0, maxH);
-    if (width <= 0 || height <= 0) continue;
+
+    const rawConfidence = clamp(step.confidence, 0, 1);
+
+    if (width <= 0 || height <= 0) {
+      stepAdjustments.push({
+        id: step.id,
+        rawArea: 0,
+        notes: ['degenerate bbox (zero area), dropped'],
+        originalConfidence: rawConfidence,
+        adjustedConfidence: 0,
+        dropped: true,
+      });
+      continue;
+    }
+
+    // Area downgrade (PP1). Area is a 0–1 fraction of the canvas.
+    const area = (width / 1000) * (height / 1000);
+    const notes: string[] = [];
+    let confidenceMultiplier = 1;
+
+    if (area > AREA_HARD_THRESHOLD) {
+      confidenceMultiplier = AREA_HARD_MULTIPLIER;
+      notes.push(
+        `area=${area.toFixed(3)} > ${AREA_HARD_THRESHOLD}, confidence ×${AREA_HARD_MULTIPLIER}`,
+      );
+    } else if (area > AREA_SOFT_THRESHOLD) {
+      confidenceMultiplier = AREA_SOFT_MULTIPLIER;
+      notes.push(
+        `area=${area.toFixed(3)} > ${AREA_SOFT_THRESHOLD}, confidence ×${AREA_SOFT_MULTIPLIER}`,
+      );
+    }
+
+    const adjustedConfidence = clamp(
+      rawConfidence * confidenceMultiplier,
+      0,
+      1,
+    );
+
+    stepAdjustments.push({
+      id: step.id,
+      rawArea: area,
+      notes,
+      originalConfidence: rawConfidence,
+      adjustedConfidence,
+      dropped: false,
+    });
 
     steps.push({
       id: step.id,
@@ -151,17 +236,23 @@ export function sanitizeOperationGuideResult(
       titleJa: step.titleJa,
       actionJa: step.actionJa,
       detailJa: step.detailJa,
-      confidence: clamp(step.confidence, 0, 1),
+      confidence: adjustedConfidence,
     });
 
     if (steps.length >= MAX_OPERATION_STEPS) break;
   }
 
   return {
-    summaryJa: result.summaryJa,
-    steps,
-    unresolved: result.unresolved,
-    safetyWarnings: result.safetyWarnings,
+    result: {
+      summaryJa: result.summaryJa,
+      steps,
+      unresolved: result.unresolved,
+      safetyWarnings: result.safetyWarnings,
+    },
+    trace: {
+      bboxRescaled: rescaled,
+      stepAdjustments,
+    },
   };
 }
 

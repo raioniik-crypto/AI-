@@ -72,7 +72,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     if (guideMode === 'operation') {
-      const result = await analyzeOperationWithOpenAI({
+      const { result, debug } = await analyzeOperationWithOpenAI({
         imageDataUrl,
         userText,
         history,
@@ -91,11 +91,13 @@ export async function POST(request: Request): Promise<NextResponse> {
         );
       }
 
+      const includeDebug = process.env.OPERATION_GUIDE_DEBUG === '1';
       return jsonResponse(
         {
           ok: true,
           mode: 'operation',
           result,
+          ...(includeDebug ? { debug } : {}),
         },
         200,
       );

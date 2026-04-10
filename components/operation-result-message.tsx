@@ -22,6 +22,13 @@ const TARGET_TYPE_LABEL: Record<OperationTargetType, string> = {
 };
 
 /**
+ * Steps below this confidence get a "自信度低め" badge so the user
+ * knows to double-check the position before clicking. Matches the
+ * thresholds used by `sanitizeOperationGuideResult` PP1 area downgrade.
+ */
+const LOW_CONFIDENCE_THRESHOLD = 0.5;
+
+/**
  * Chat bubble for a successful operation-guide response. Renders:
  *   - the screenshot with numbered step badges
  *   - a summary blurb
@@ -100,6 +107,7 @@ interface StepCardProps {
 }
 
 function StepCard({ step, index }: StepCardProps): JSX.Element {
+  const isLowConfidence = step.confidence < LOW_CONFIDENCE_THRESHOLD;
   return (
     <li className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
       <div
@@ -115,10 +123,23 @@ function StepCard({ step, index }: StepCardProps): JSX.Element {
           <span className="rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
             {TARGET_TYPE_LABEL[step.targetType]}
           </span>
+          {isLowConfidence ? (
+            <span
+              className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800"
+              title="この位置はAIの自信度が低めです。実際の画面で位置を目視確認してください"
+            >
+              自信度低め
+            </span>
+          ) : null}
         </div>
         <p className="mt-0.5 text-slate-700">{step.actionJa}</p>
         {step.detailJa ? (
           <p className="mt-0.5 text-[11px] text-slate-500">{step.detailJa}</p>
+        ) : null}
+        {isLowConfidence ? (
+          <p className="mt-1 text-[11px] text-amber-700">
+            ※ 位置が多少ずれている可能性があります。画像を見て正しい場所を確認してください。
+          </p>
         ) : null}
       </div>
     </li>

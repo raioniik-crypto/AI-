@@ -1,4 +1,7 @@
-import type { OperationGuideResult } from './operation-guide';
+import type {
+  OperationDebugInfo,
+  OperationGuideResult,
+} from './operation-guide';
 
 /**
  * Normalized bounding box for an annotation. All values are in the range
@@ -84,6 +87,12 @@ export interface AnalyzeOperationSuccessResponse {
   ok: true;
   mode: 'operation';
   result: OperationGuideResult;
+  /**
+   * Dev-only debug payload. Only attached when the server environment
+   * has `OPERATION_GUIDE_DEBUG=1`. Inspect this in the DevTools Network
+   * tab to compare the raw model output against the sanitized result.
+   */
+  debug?: OperationDebugInfo;
 }
 
 export interface AnalyzeSensitiveResponse {

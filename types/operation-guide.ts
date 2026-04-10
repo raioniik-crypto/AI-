@@ -49,3 +49,46 @@ export interface OperationGuideResult {
   unresolved: OperationUnresolved[];
   safetyWarnings: string[];
 }
+
+/**
+ * Per-step adjustment record emitted by the sanitizer so we can show raw
+ * vs. corrected values in the debug echo.
+ */
+export interface OperationStepAdjustment {
+  id: string;
+  /** bbox area as fraction of the 0–1000 canvas (0–1). */
+  rawArea: number;
+  /** Human-readable notes about confidence multipliers applied. */
+  notes: string[];
+  /** Original confidence before any downgrade. */
+  originalConfidence: number;
+  /** Final confidence after downgrade. */
+  adjustedConfidence: number;
+  /** True if the step was dropped entirely by the sanitizer. */
+  dropped: boolean;
+}
+
+/**
+ * Trace object emitted by `sanitizeOperationGuideResultWithTrace` so the
+ * `/api/analyze` endpoint can attach a dev-only debug payload.
+ */
+export interface OperationSanitizerTrace {
+  /** True when a 0-1 → 0-1000 rescale was applied. */
+  bboxRescaled: boolean;
+  stepAdjustments: OperationStepAdjustment[];
+}
+
+/**
+ * Dev-mode debug payload. Only attached to `/api/analyze` responses when
+ * `OPERATION_GUIDE_DEBUG=1` is set in the server environment.
+ */
+export interface OperationDebugInfo {
+  /** The raw model output as validated by zod, before sanitization. */
+  raw: {
+    summaryJa: string;
+    steps: OperationStep[];
+    unresolved: OperationUnresolved[];
+    safetyWarnings: string[];
+  };
+  trace: OperationSanitizerTrace;
+}

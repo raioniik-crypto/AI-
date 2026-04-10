@@ -2,7 +2,10 @@ import 'server-only';
 import OpenAI from 'openai';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import type { AnalyzeRequestBody } from '@/types/form-guide';
-import type { OperationGuideResult } from '@/types/operation-guide';
+import type {
+  OperationDebugInfo,
+  OperationGuideResult,
+} from '@/types/operation-guide';
 import { SYSTEM_PROMPT } from './prompts';
 import { OPERATION_GUIDE_SYSTEM_PROMPT } from './operation-prompts';
 import {
@@ -14,8 +17,14 @@ import {
 import {
   OPERATION_GUIDE_JSON_SCHEMA,
   OperationGuideResultSchema,
-  sanitizeOperationGuideResult,
+  sanitizeOperationGuideResultWithTrace,
 } from './operation-schema';
+
+export interface AnalyzeOperationOutput {
+  result: OperationGuideResult;
+  /** Always populated — callers decide whether to forward it to the UI. */
+  debug: OperationDebugInfo;
+}
 
 const ANALYZE_MODEL = 'gpt-4o';
 const REQUEST_TIMEOUT_MS = 30_000;
@@ -94,11 +103,13 @@ export async function analyzeWithOpenAI(
 /**
  * Calls GPT-4o Vision in 画面操作ガイド mode. Reuses the same request shape
  * (image + userText + history) but asks for an OperationGuideResult via a
- * separate prompt + JSON schema.
+ * separate prompt + JSON schema. Also returns a debug payload with the
+ * raw (pre-sanitizer) model output and a sanitizer trace so the API
+ * route can conditionally echo it to the client under a dev flag.
  */
 export async function analyzeOperationWithOpenAI(
   body: AnalyzeRequestBody,
-): Promise<OperationGuideResult> {
+): Promise<AnalyzeOperationOutput> {
   const client = getClient();
 
   const completion = await client.chat.completions.create({
@@ -121,5 +132,18 @@ export async function analyzeOperationWithOpenAI(
   }
 
   const parsed = OperationGuideResultSchema.parse(JSON.parse(rawContent));
-  return sanitizeOperationGuideResult(parsed);
+  const { result, trace } = sanitizeOperationGuideResultWithTrace(parsed);
+
+  return {
+    result,
+    debug: {
+      raw: {
+        summaryJa: parsed.summaryJa,
+        steps: parsed.steps,
+        unresolved: parsed.unresolved,
+        safetyWarnings: parsed.safetyWarnings,
+      },
+      trace,
+    },
+  };
 }

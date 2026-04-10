@@ -1,8 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
+  AREA_HARD_MULTIPLIER,
+  AREA_SOFT_MULTIPLIER,
   MAX_OPERATION_STEPS,
   OperationGuideResultSchema,
   sanitizeOperationGuideResult,
+  sanitizeOperationGuideResultWithTrace,
   type ValidatedOperationGuideResult,
 } from './operation-schema';
 
@@ -239,5 +242,118 @@ describe('sanitizeOperationGuideResult', () => {
     expect(step.y).toBe(200);
     expect(step.width).toBe(300);
     expect(step.height).toBe(150);
+  });
+
+  it('leaves confidence alone for small (tight) bboxes', () => {
+    // 300 × 200 at (100, 200) → area = 0.06 ← well under 0.3 threshold
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 100, y: 200, width: 300, height: 200, confidence: 0.9 },
+        ],
+      }),
+    );
+    expect(result.steps[0]?.confidence).toBe(0.9);
+  });
+
+  it('applies soft confidence downgrade when area > 0.3', () => {
+    // 600 × 600 → area = 0.36 ← in soft band (0.3 < area ≤ 0.5)
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 100, y: 100, width: 600, height: 600, confidence: 0.9 },
+        ],
+      }),
+    );
+    expect(result.steps[0]?.confidence).toBeCloseTo(0.9 * AREA_SOFT_MULTIPLIER);
+  });
+
+  it('applies hard confidence downgrade when area > 0.5', () => {
+    // 800 × 800 → area = 0.64 ← hard band
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0, y: 0, width: 800, height: 800, confidence: 0.9 },
+        ],
+      }),
+    );
+    expect(result.steps[0]?.confidence).toBeCloseTo(0.9 * AREA_HARD_MULTIPLIER);
+  });
+
+  it('does not downgrade a typical thin row bbox', () => {
+    // 500 × 25 row (GitHub file list shape) → area = 0.0125
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          {
+            ...baseStep,
+            x: 250,
+            y: 315,
+            width: 500,
+            height: 25,
+            confidence: 0.8,
+          },
+        ],
+      }),
+    );
+    expect(result.steps[0]?.confidence).toBe(0.8);
+  });
+});
+
+describe('sanitizeOperationGuideResultWithTrace', () => {
+  it('reports bboxRescaled=false for a normal 0-1000 input', () => {
+    const { trace } = sanitizeOperationGuideResultWithTrace(makeResult());
+    expect(trace.bboxRescaled).toBe(false);
+  });
+
+  it('reports bboxRescaled=true when autodetect fires', () => {
+    const { trace } = sanitizeOperationGuideResultWithTrace(
+      makeResult({
+        steps: [{ ...baseStep, x: 0.1, y: 0.2, width: 0.3, height: 0.4 }],
+      }),
+    );
+    expect(trace.bboxRescaled).toBe(true);
+  });
+
+  it('records a notes entry when the soft downgrade fires', () => {
+    const { trace } = sanitizeOperationGuideResultWithTrace(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0, y: 0, width: 600, height: 600, confidence: 0.9 },
+        ],
+      }),
+    );
+    const adj = trace.stepAdjustments[0];
+    expect(adj).toBeDefined();
+    if (!adj) return;
+    expect(adj.notes.length).toBeGreaterThan(0);
+    expect(adj.originalConfidence).toBe(0.9);
+    expect(adj.adjustedConfidence).toBeCloseTo(0.9 * AREA_SOFT_MULTIPLIER);
+    expect(adj.dropped).toBe(false);
+  });
+
+  it('records dropped=true for degenerate steps', () => {
+    const { trace } = sanitizeOperationGuideResultWithTrace(
+      makeResult({
+        steps: [
+          { ...baseStep, width: 0, height: 50 },
+          { ...baseStep, id: 's2' },
+        ],
+      }),
+    );
+    expect(trace.stepAdjustments[0]?.dropped).toBe(true);
+    expect(trace.stepAdjustments[1]?.dropped).toBe(false);
+  });
+
+  it('carries the raw area in stepAdjustments for each surviving step', () => {
+    const { trace } = sanitizeOperationGuideResultWithTrace(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0, y: 0, width: 500, height: 25 },
+        ],
+      }),
+    );
+    // 500/1000 * 25/1000 = 0.0125
+    expect(trace.stepAdjustments[0]?.rawArea).toBeCloseTo(0.0125);
   });
 });
