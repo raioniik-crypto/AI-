@@ -5,6 +5,7 @@ import { useFormGuideStore } from '@/stores/form-guide-store';
 import ImageDropzone from './image-dropzone';
 import ChatThread from './chat-thread';
 import ChatInput from './chat-input';
+import ScreenshotGuideCard from './screenshot-guide-card';
 
 export default function ChatContainer(): JSX.Element {
   const currentImage = useFormGuideStore((state) => state.currentImage);
@@ -29,6 +30,7 @@ export default function ChatContainer(): JSX.Element {
           別の画像で始める
         </button>
       </div>
+      <ScreenshotGuideCard />
       <ChatThread />
       <ChatInput />
     </div>
