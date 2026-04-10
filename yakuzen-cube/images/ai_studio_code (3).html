@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>氣になるYAKUZEN CUBE | DOG POOL</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#FDF8F0;
+  --gold:#C4A265;
+  --gold-light:#E8D5A8;
+  --brown:#5C4A32;
+  --brown-dark:#3A2E1E;
+  --green-herb:#7A8B6F;
+  --green-light:#A8B89E;
+  --yellow-soft:#F5E6A3;
+  --yellow-pale:#FBF4D6;
+  --text:#3A2E1E;
+  --text-light:#6B5D4A;
+}
+html{
+  scroll-behavior:smooth;
+  font-size:16px;
+  /* ヘッダー追従時にアンカーリンクが被るのを防ぐ */
+  scroll-padding-top: 80px; 
+}
+body{
+  font-family:'Zen Kaku Gothic New','Noto Serif JP',serif;
+  color:var(--text);
+  background:var(--cream);
+  overflow-x:hidden;
+  line-height:1.9;
+}
+
+/* ===== LOADING SCREEN (安全なCSSのみでの実装) ===== */
+.loader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--cream); z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: loaderFadeOut 1s cubic-bezier(0.8, 0, 0.2, 1) 1.5s forwards;
+  pointer-events: none; /* 裏側の操作を阻害しない */
+}
+.loader-char {
+  font-family: 'Noto Serif JP', serif; font-size: 4rem; color: var(--gold);
+  animation: loaderPulse 1.2s ease-in-out infinite alternate;
+}
+.loader-line {
+  width: 2px; height: 0; background: var(--gold); margin-top: 20px;
+  animation: loaderLine 1s cubic-bezier(0.8, 0, 0.2, 1) 0.2s forwards;
+}
+@keyframes loaderPulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1.05); } }
+@keyframes loaderLine { to { height: 60px; } }
+@keyframes loaderFadeOut { to { opacity: 0; visibility: hidden; } }
+
+/* ===== PARALLAX WATERMARK ===== */
+.bg-watermark {
+  position: absolute; top: 5%; left: 50%; transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', serif; font-size: 18vw; font-weight: 300;
+  color: rgba(196,162,101,0.06); white-space: nowrap; pointer-events: none; z-index: 0;
+}
+.philosophy .bg-watermark { color: rgba(255,255,255,0.03); top: 15%; }
+.cta-section .bg-watermark { color: rgba(255,255,255,0.03); top: -10%; }
+
+/* ===== HERO ===== */
+.hero{
+  min-height:100vh; display:flex;align-items:center;justify-content:center;
+  position:relative; background:linear-gradient(160deg,var(--yellow-pale) 0%,var(--cream) 40%,#fff 100%);
+  overflow:hidden; padding-top: 60px;
+}
+.hero::before{
+  content:'';position:absolute;top:-20%;right:-10%; width:60vw;height:60vw;
+  background:radial-gradient(circle,var(--yellow-soft) 0%,transparent 70%); border-radius:50%;opacity:.5;
+  animation:float 8s ease-in-out infinite;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-15%;left:-5%; width:40vw;height:40vw;
+  background:radial-gradient(circle,var(--green-light) 0%,transparent 70%); border-radius:50%;opacity:.2;
+  animation:float 10s ease-in-out infinite reverse;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+
+.hero-inner{
+  position:relative;z-index:1; text-align:center; padding:2rem;
+  display: flex; flex-direction: column; align-items: center;
+  /* ローダーが消えた後にフェードインさせる */
+  opacity: 0; animation: fadeUpHero 1s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s forwards;
+}
+@keyframes fadeUpHero{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-badge{
+  display:inline-block; font-family:'Cormorant Garamond',serif; font-size:.85rem;letter-spacing:.3em;
+  color:var(--gold); border:1px solid var(--gold-light); padding:.4em 1.5em; margin-bottom:1.5rem;
+  text-transform:uppercase; background: rgba(255,255,255,0.5); border-radius: 50px;
+}
+.hero-title{ font-family:'Noto Serif JP',serif; font-weight:300; font-size:clamp(2.2rem,5vw,4rem); letter-spacing:.15em; line-height:1.4; margin-bottom:1rem; }
+.hero-title em{
+  font-style:normal; font-weight:600;
+  background:linear-gradient(135deg,var(--gold),var(--brown));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero-sub{ font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2vw,1.4rem); letter-spacing:.35em; color:var(--gold); margin-bottom:1rem; text-transform:uppercase; }
+.hero-desc{ font-size:.95rem; color:var(--text-light); max-width:480px;margin:0 auto 1.5rem; letter-spacing:.05em; line-height:2; }
+.hero-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--brown-dark); margin-bottom: 2rem; display: flex; align-items: baseline; justify-content: center; gap: 0.5rem; }
+.hero-price span { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 0.9rem; color: var(--text-light); }
+.hero-cta{
+  display:inline-block; font-family:'Noto Serif JP',serif; font-size:1rem;letter-spacing:.15em;
+  color:#fff; background:linear-gradient(135deg,var(--brown),var(--brown-dark));
+  padding:1.2em 4em; text-decoration:none; transition:all .4s ease;
+  position:relative; overflow:hidden; border-radius: 4px; box-shadow: 0 8px 25px rgba(92,74,50,.2);
+}
+.hero-cta:hover{ transform:translateY(-3px); box-shadow:0 15px 35px rgba(92,74,50,.3); }
+.hero-cta::before{
+  content:'';position:absolute;top:0;left:-100%; width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  transform:skewX(-25deg); animation:shine 4s infinite;
+}
+@keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+/* 立体(アイソメトリック)なキューブアニメーション */
+.hero-graphic { width: 140px; height: 140px; margin: 0 auto 1.5rem; animation: floatObj 6s ease-in-out infinite; }
+@keyframes floatObj { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+
+/* Decorative leaf */
+.leaf{position:absolute;opacity:.15;font-size:3rem;pointer-events:none}
+.leaf-1{top:15%;left:8%;transform:rotate(-30deg);animation:sway 6s ease-in-out infinite}
+.leaf-2{top:60%;right:12%;transform:rotate(20deg);animation:sway 7s ease-in-out infinite .5s}
+.leaf-3{bottom:20%;left:15%;transform:rotate(45deg);animation:sway 5s ease-in-out infinite 1s}
+@keyframes sway{0%,100%{transform:rotate(-30deg) translateX(0)}50%{transform:rotate(-25deg) translateX(10px)}}
+
+/* ===== SECTIONS ===== */
+section{padding:7rem 1.5rem; position: relative;}
+.section-inner { position: relative; z-index: 1; }
+.section-label{ font-family:'Cormorant Garamond',serif; font-size:.8rem;letter-spacing:.4em; color:var(--gold);text-transform:uppercase; text-align:center;margin-bottom:.5rem; }
+.section-title{ font-family:'Noto Serif JP',serif; font-weight:400; font-size:clamp(1.5rem,3vw,2.2rem); text-align:center;letter-spacing:.12em; margin-bottom:3rem; line-height:1.6; }
+.section-title::after{ content:'';display:block; width:40px;height:1px; background:var(--gold); margin:1.2rem auto 0; }
+
+/* ===== CONCEPT ===== */
+.concept{ background:linear-gradient(180deg,#fff 0%,var(--yellow-pale) 100%); }
+.concept-grid{ max-width:900px;margin:0 auto; display:grid; grid-template-columns:1fr; gap:2rem; }
+.concept-card{
+  background:rgba(255,255,255,.8); backdrop-filter:blur(10px); padding:2.5rem 2rem;
+  border:1px solid rgba(196,162,101,.2); border-radius: 8px; text-align:center;
+  position: relative; overflow: hidden;
+  transition:transform .4s ease, box-shadow .4s ease;
+}
+/* ホバー時の光の反射エフェクト（シャイン） */
+.concept-card::after {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+  transform: rotate(45deg) translate(-100%, -100%); transition: all 0.6s ease; pointer-events: none;
+}
+.concept-card:hover{ transform:translateY(-6px); box-shadow: 0 15px 30px rgba(196,162,101,.15); }
+.concept-card:hover::after { transform: rotate(45deg) translate(100%, 100%); }
+
+.concept-icon{ font-size:2.5rem;margin-bottom:1rem;display:inline-block; position: relative;}
+.concept-icon::before {
+  content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 50px; height: 50px; background: var(--yellow-soft); border-radius: 50%; z-index: -1; opacity: 0.5;
+  animation: pulseIcon 2s infinite alternate;
+}
+@keyframes pulseIcon { to { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; } }
+
+.concept-card h3{ font-family:'Noto Serif JP',serif; font-weight:400; font-size:1.15rem;letter-spacing:.1em; margin-bottom:.8rem; color:var(--brown); }
+.concept-card p{ font-size:.88rem;color:var(--text-light); line-height:2; }
+@media(min-width:640px){ .concept-grid{grid-template-columns:repeat(3,1fr)} }
+
+/* ===== PHILOSOPHY ===== */
+.philosophy{ background:var(--brown-dark); color:#fff; }
+.philosophy .section-label{color:var(--gold-light)}
+.philosophy .section-title{color:#fff}
+.philosophy .section-title::after{background:var(--gold-light)}
+.philosophy-text{ max-width:680px;margin:0 auto; text-align:center; font-size:.95rem; line-height:2.4; color:rgba(255,255,255,.8); letter-spacing:.05em; }
+.philosophy-highlight{ display:inline-block; font-family:'Noto Serif JP',serif; font-size:1.3rem; font-weight:400; color:var(--gold-light); margin:2rem 0; letter-spacing:.15em; line-height:1.8; }
+.qi-diagram{ max-width:320px;margin:2.5rem auto 0; display:flex;align-items:center;justify-content:center;gap:1.5rem; }
+.qi-circle{ width:80px;height:80px; border-radius:50%; display:flex;align-items:center;justify-content:center; font-family:'Noto Serif JP',serif; font-size:1.4rem;font-weight:500; letter-spacing:.1em; transition: transform 0.4s ease; box-shadow: 0 0 20px rgba(196,162,101,0.1) inset; }
+.qi-circle:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(196,162,101,0.3) inset; }
+.qi-ki{background:rgba(196,162,101,.25);color:var(--gold-light);border:1px solid var(--gold)}
+.qi-ketsu{background:rgba(168,184,158,.2);color:var(--green-light);border:1px solid var(--green-light)}
+.qi-sui{background:rgba(160,200,220,.2);color:#9CC5D8;border:1px solid #9CC5D8}
+.qi-sep{color:rgba(255,255,255,.3);font-size:1.2rem}
+
+/* ===== INGREDIENTS ===== */
+.ingredients{ background:linear-gradient(180deg,var(--cream) 0%,#fff 50%,var(--yellow-pale) 100%); }
+.ingredients-subtitle{ text-align:center; font-size:.9rem; color:var(--text-light); margin-top:-2rem;margin-bottom:3rem; }
+.herb-grid{ max-width:900px;margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+@media(min-width:768px){.herb-grid{grid-template-columns:repeat(3,1fr)}}
+.herb-card{
+  background:#fff; padding:1.8rem 1.2rem; border:1px solid rgba(196,162,101,.1); border-radius: 8px;
+  text-align:center; transition:all .4s ease; position:relative; overflow:hidden;
+}
+.herb-card::before{
+  content:'';position:absolute;top:0;left:0;right:0; height:3px;
+  background:linear-gradient(90deg,var(--gold-light),var(--green-herb));
+  transform:scaleX(0); transition:transform .4s ease;
+}
+.herb-card:hover::before{transform:scaleX(1)}
+.herb-card:hover{ transform:translateY(-5px); box-shadow:0 12px 30px rgba(92,74,50,.1); }
+.herb-emoji{font-size:1.8rem;margin-bottom:.8rem;display:block}
+.herb-name{ font-family:'Noto Serif JP',serif; font-size:1rem;font-weight:500; letter-spacing:.1em; margin-bottom:.6rem; color:var(--brown); }
+.herb-desc{ font-size:.8rem; color:var(--text-light); line-height:1.9; }
+
+/* ===== PLUS ===== */
+.plus-section{ text-align:center; padding:3rem 1.5rem; background:#fff; position: relative;}
+.plus-icon{ font-size:2rem;color:var(--gold); margin-bottom:1rem; }
+.plus-grid{ max-width:700px;margin:0 auto; display:grid;grid-template-columns:1fr 1fr;gap:1.5rem; position: relative; z-index: 1;}
+.plus-card{ background:var(--yellow-pale); padding:2rem 1.2rem; text-align:center; border-radius: 8px;}
+.plus-card h4{ font-family:'Noto Serif JP',serif; font-weight:500;font-size:1rem; letter-spacing:.08em; margin-bottom:.6rem; color:var(--brown); }
+.plus-card p{font-size:.82rem;color:var(--text-light);line-height:1.9}
+
+/* ===== VOICE ===== */
+.voice { background: #fff; }
+.voice-grid { display: grid; gap: 2rem; max-width: 800px; margin: 0 auto; }
+@media(min-width: 768px) { .voice-grid { grid-template-columns: 1fr 1fr; } }
+.voice-card { background: var(--cream); padding: 2rem; border-radius: 12px; position: relative; box-shadow: 0 4px 15px rgba(92,74,50,0.05); transition: transform 0.3s ease; }
+.voice-card:hover { transform: translateY(-3px); }
+.voice-card::before { content: '“'; position: absolute; top: 10px; left: 15px; font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: var(--gold-light); line-height: 1; opacity: 0.6; }
+.voice-card p { font-size: 0.9rem; color: var(--text); line-height: 1.8; position: relative; z-index: 1; }
+.voice-user { margin-top: 1rem; text-align: right; font-size: 0.8rem; color: var(--text-light); display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+
+/* ===== FAQ ===== */
+.faq { background: var(--cream); }
+.faq-list { max-width: 600px; margin: 0 auto; }
+.faq-item { border: 1px solid rgba(196,162,101,.2); border-radius: 8px; margin-bottom: 1rem; overflow: hidden; background: #fff;}
+.faq-item summary {
+  padding: 1.2rem 1.5rem; font-family: 'Noto Serif JP', serif; font-weight: 500;
+  color: var(--brown); cursor: pointer; list-style: none; position: relative; transition: background 0.3s ease;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { background: var(--yellow-pale); }
+.faq-item summary::after { content: '+'; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--gold); font-size: 1.5rem; font-weight: 300; transition: transform 0.3s; }
+.faq-item[open] summary::after { content: '-'; transform: translateY(-50%) rotate(180deg); }
+.faq-answer { padding: 1.5rem; font-size: 0.88rem; color: var(--text-light); line-height: 1.8; border-top: 1px solid rgba(196,162,101,.1); }
+/* detailsを開いたときのスムーズアニメーション */
+details[open] .faq-answer { animation: slideDown 0.4s ease-out; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== MAKERS ===== */
+.makers{ background:var(--yellow-pale); }
+.makers-inner{ max-width:700px;margin:0 auto; text-align:center; }
+.makers-text{ font-size:.92rem;color:var(--text-light); line-height:2.2;margin-bottom:2rem; letter-spacing:.03em; }
+.makers-profiles{ display:flex;gap:2rem;justify-content:center;flex-wrap:wrap; }
+.maker{ background:#fff; padding:2rem 1.5rem; flex:1;min-width:220px;max-width:300px; border:1px solid rgba(196,162,101,.15); border-radius: 8px;}
+.maker-role{ font-size:.75rem;color:var(--gold); letter-spacing:.15em;margin-bottom:.5rem; text-transform:uppercase; }
+.maker-name{ font-family:'Noto Serif JP',serif; font-size:1.05rem;font-weight:500; letter-spacing:.1em;margin-bottom:.3rem; }
+.maker-org{font-size:.78rem;color:var(--text-light)}
+
+/* ===== PRODUCT INFO & USAGE ===== */
+.product-info{ background:#fff; }
+.info-table{ max-width:600px;margin:0 auto; border-collapse:collapse; width:100%; font-size:.88rem; }
+.info-table tr{border-bottom:1px solid rgba(196,162,101,.15)}
+.info-table th{ text-align:left; padding:1rem .8rem; font-weight:500; color:var(--brown); width:30%; vertical-align:top; letter-spacing:.08em; }
+.info-table td{ padding:1rem .8rem; color:var(--text-light); line-height:1.8; }
+
+.usage{ background:var(--cream); }
+.usage-grid{ max-width:500px;margin:0 auto; display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; text-align:center; }
+.usage-item{ background:#fff; padding:1.5rem 1rem; border:1px solid rgba(196,162,101,.1); border-radius: 8px;}
+.usage-size{ font-family:'Noto Serif JP',serif; font-size:1rem;font-weight:500; color:var(--brown);margin-bottom:.4rem; }
+.usage-amount{ font-size:.85rem;color:var(--gold); font-weight:500; }
+.notes{ max-width:600px;margin:0 auto; padding:1.5rem 0 0; text-align:center; }
+.notes p{ font-size:.75rem;color:var(--text-light); line-height:1.8;opacity:.7; }
+
+/* ===== FINAL CTA ===== */
+.cta-section{ background:linear-gradient(135deg,var(--brown-dark),var(--brown)); color:#fff;text-align:center; padding:6rem 1.5rem; position: relative; overflow: hidden;}
+.cta-section .section-title{color:#fff; margin-bottom: 1.5rem;}
+.cta-section .section-title::after{background:var(--gold-light)}
+.cta-price { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold-light); margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: center; gap: 0.5rem; }
+.cta-price span { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+.cta-desc{ font-size:.9rem;color:rgba(255,255,255,.8); margin-bottom:2.5rem; letter-spacing:.05em; }
+.cta-limit { display: inline-block; background: rgba(196,162,101,0.2); border: 1px solid var(--gold); padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.8rem; color: var(--gold-light); margin-bottom: 2rem; }
+.cta-btn{ display:inline-block; font-family:'Noto Serif JP',serif; font-size:1.1rem;letter-spacing:.2em; color:var(--brown-dark); background:linear-gradient(135deg,var(--gold-light),var(--gold)); padding:1.2em 4em; text-decoration:none; transition:all .4s ease; border-radius: 4px; position: relative; overflow: hidden; }
+.cta-btn:hover{ transform:translateY(-3px); box-shadow:0 15px 40px rgba(196,162,101,.4); }
+.cta-btn::before{ content:'';position:absolute;top:0;left:-100%; width:50%;height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); transform:skewX(-25deg); animation:shine 4s infinite; }
+
+/* ===== FLOATING CTA ===== */
+.floating-cta {
+  position: fixed; bottom: 20px; right: 20px; z-index: 99;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--brown-dark);
+  padding: 15px 25px; border-radius: 50px; font-family: 'Noto Serif JP', serif; font-weight: 600; font-size: 0.9rem;
+  text-decoration: none; box-shadow: 0 10px 25px rgba(92,74,50,0.3);
+  transform: translateY(100px); opacity: 0; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; align-items: center; gap: 8px; letter-spacing: 0.05em;
+}
+.floating-cta.visible { transform: translateY(0); opacity: 1; }
+.floating-cta:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px rgba(92,74,50,0.4); }
+
+/* ===== FOOTER ===== */
+footer{ text-align:center; padding:2.5rem 1.5rem; background:var(--brown-dark); color:rgba(255,255,255,.4); font-size:.75rem;letter-spacing:.1em; }
+
+/* ===== NAV ===== */
+.top-nav{
+  position:fixed;top:0;left:0;right:0; z-index:100; background:rgba(253,248,240,.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(196,162,101,.1); padding:.8rem 2rem; display:flex;align-items:center;justify-content:space-between;
+  transform:translateY(-100%); transition:transform .4s ease;
+}
+.top-nav.visible{transform:translateY(0)}
+.nav-logo{ font-family:'Noto Serif JP',serif; font-size:.85rem;font-weight:500; letter-spacing:.15em;color:var(--brown); }
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{ font-size:.75rem;color:var(--text-light); text-decoration:none;letter-spacing:.1em; transition:color .3s; }
+.nav-links a:hover{color:var(--gold)}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.25,.46,.45,.94)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.15s}
+.reveal-delay-2{transition-delay:.3s}
+.reveal-delay-3{transition-delay:.45s}
+.reveal-delay-4{transition-delay:.6s}
+.reveal-delay-5{transition-delay:.75s}
+
+@media(max-width:639px){
+  .nav-links{display:none}
+  .herb-grid{grid-template-columns:1fr 1fr}
+  .plus-grid{grid-template-columns:1fr}
+  .qi-diagram{gap:.8rem}
+  .qi-circle{width:65px;height:65px;font-size:1.1rem}
+  .floating-cta { bottom: 15px; right: 15px; padding: 12px 20px; font-size: 0.85rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- SAFE CSS LOADER -->
+<div id="loader" class="loader">
+  <div class="loader-char">氣</div>
+  <div class="loader-line"></div>
+</div>
+
+<!-- NAV -->
+<nav class="top-nav" id="nav">
+  <div class="nav-logo">氣になるYAKUZEN</div>
+  <div class="nav-links">
+    <a href="#concept">コンセプト</a>
+    <a href="#philosophy">薬膳とは</a>
+    <a href="#ingredients">原材料</a>
+    <a href="#voice">お客様の声</a>
+    <a href="#info">商品情報</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Parallax BG -->
+  <div class="bg-watermark parallax" data-speed="0.2">YAKUZEN CUBE</div>
+
+  <div class="leaf leaf-1">🌿</div>
+  <div class="leaf leaf-2">🍃</div>
+  <div class="leaf leaf-3">🌿</div>
+  <div class="hero-inner">
+    <span class="hero-badge">For Your Beloved Dog</span>
+    
+    <!-- アイソメトリック（立体）な薬膳キューブのSVG -->
+    <svg class="hero-graphic" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(0, 10)">
+        <!-- 奥のキューブ (ゴールド系) -->
+        <path d="M50 20 L75 30 L50 40 L25 30 Z" fill="#E8D5A8"/>
+        <path d="M25 30 L50 40 L50 65 L25 55 Z" fill="#D8C598"/>
+        <path d="M50 40 L75 30 L75 55 L50 65 Z" fill="#C4A265"/>
+        <!-- 手前のキューブ (生薬グリーン系) -->
+        <path d="M50 45 L75 55 L50 65 L25 55 Z" fill="#9BAA8F" opacity="0.95"/>
+        <path d="M25 55 L50 65 L50 90 L25 80 Z" fill="#8A9B7F" opacity="0.95"/>
+        <path d="M50 65 L75 55 L75 80 L50 90 Z" fill="#7A8B6F" opacity="0.95"/>
+      </g>
+    </svg>
+
+    <h1 class="hero-title">
+      <em>氣</em>になる<br>YAKUZEN CUBE
+    </h1>
+    <p class="hero-sub">Medicinal Cuisine for Dogs</p>
+    <p class="hero-desc">
+      世界中医薬学連合会認定の<br>
+      国際中医薬膳管理師が<br>
+      ひとつひとつ丁寧に手作りしてお届けします
+    </p>
+    <div class="hero-price">
+      ¥2,800 <span>(税込 / 35g)</span>
+    </div>
+    <a href="#buy" class="hero-cta">ご購入はこちら</a>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="concept" id="concept">
+  <div class="bg-watermark parallax" data-speed="0.15">CONCEPT</div>
+  <div class="section-inner">
+    <p class="section-label reveal">Concept</p>
+    <h2 class="section-title reveal">大切な家族のために</h2>
+    <div class="concept-grid">
+      <div class="concept-card reveal reveal-delay-1">
+        <span class="concept-icon">🐾</span>
+        <h3>生でもなく、焼かずに</h3>
+        <p>体質や症状に「生もの」や「焼く」調理法が禁忌となるケースが多い中、安心して食べられる薬膳キューブを開発しました。</p>
+      </div>
+      <div class="concept-card reveal reveal-delay-2">
+        <span class="concept-icon">🌿</span>
+        <h3>6種の生薬を配合</h3>
+        <p>ハトムギ、陳皮、大棗、枸杞子、竜眼肉、山査子。厳選した生薬を絶妙なバランスで組み合わせています。</p>
+      </div>
+      <div class="concept-card reveal reveal-delay-3">
+        <span class="concept-icon">✋</span>
+        <h3>すべて手作り</h3>
+        <p>防腐剤等の薬品は一切不使用。国内生産で、ひとつひとつ想いを込めて手仕事で作り上げています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy" id="philosophy">
+  <div class="bg-watermark parallax" data-speed="0.1">PHILOSOPHY</div>
+  <div class="section-inner">
+    <p class="section-label reveal">Philosophy</p>
+    <h2 class="section-title reveal">薬膳の力で<br>氣を満たす</h2>
+    <div class="philosophy-text reveal">
+      <p>
+        薬膳料理とは中医学の基礎理論に基いて、<br>
+        体質や症状、体調、季節などを考慮した<br>
+        食材選びや調理法で作られる料理のことです。
+      </p>
+      <p class="philosophy-highlight">
+        《氣が血を作り出し、<br>血は氣に乗って全身を巡ります》
+      </p>
+      <p>
+        中医学においてカラダは「氣・血・水」という<br>
+        3つの要素によって成り立っていると考えられています。<br>
+        この3つのバランスが取れていると健康な状態であり、<br>
+        崩れているとカラダに様々な不調が現れてきます。
+      </p>
+    </div>
+    <div class="qi-diagram reveal">
+      <div class="qi-circle qi-ki">氣</div>
+      <span class="qi-sep">·</span>
+      <div class="qi-circle qi-ketsu">血</div>
+      <span class="qi-sep">·</span>
+      <div class="qi-circle qi-sui">水</div>
+    </div>
+  </div>
+</section>
+
+<!-- INGREDIENTS -->
+<section class="ingredients" id="ingredients">
+  <div class="bg-watermark parallax" data-speed="0.12">INGREDIENTS</div>
+  <div class="section-inner">
+    <p class="section-label reveal">Ingredients</p>
+    <h2 class="section-title reveal">6種の生薬</h2>
+    <p class="ingredients-subtitle reveal">氣を生み出し元氣でいられる食材を組み合わせました</p>
+    <div class="herb-grid">
+      <div class="herb-card reveal reveal-delay-1">
+        <span class="herb-emoji">🌾</span>
+        <div class="herb-name">ハトムギ</div>
+        <p class="herb-desc">身体の余分な水分を出し、むくみを改善する働きがあります</p>
+      </div>
+      <div class="herb-card reveal reveal-delay-2">
+        <span class="herb-emoji">🍊</span>
+        <div class="herb-name">陳皮</div>
+        <p class="herb-desc">氣を巡らせる働きや、胃腸の調子を整える働きがあります</p>
+      </div>
+      <div class="herb-card reveal reveal-delay-3">
+        <span class="herb-emoji">🫘</span>
+        <div class="herb-name">大棗</div>
+        <p class="herb-desc">血を増やし元気をつける。中国では1日3個食べると医者いらずと言われています</p>
+      </div>
+      <div class="herb-card reveal reveal-delay-4">
+        <span class="herb-emoji">🔴</span>
+        <div class="herb-name">枸杞子</div>
+        <p class="herb-desc">不老長寿の妙薬とされ、血や潤いを増やす働きがあります</p>
+      </div>
+      <div class="herb-card reveal reveal-delay-5">
+        <span class="herb-emoji">🫐</span>
+        <div class="herb-name">竜眼肉</div>
+        <p class="herb-desc">消化器官を強くして元氣をつける力があります</p>
+      </div>
+      <div class="herb-card reveal reveal-delay-1">
+        <span class="herb-emoji">🍒</span>
+        <div class="herb-name">山査子</div>
+        <p class="herb-desc">消化を助ける働きに優れ、血をサラサラにして巡らせる働きがあります</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLUS -->
+<div class="plus-section">
+  <div class="plus-icon reveal">＋</div>
+  <div class="plus-grid">
+    <div class="plus-card reveal reveal-delay-1">
+      <h4>ペッツメルトオリゴ糖</h4>
+      <p>乳酸菌生産物質が加わった美味しくてパワーのあるバイオジェニックスオリゴ糖。善玉菌の<strong>ごはん</strong>です。</p>
+    </div>
+    <div class="plus-card reveal reveal-delay-2">
+      <h4>柑橘果汁</h4>
+      <p>氣の巡りを促し、消化吸収機能を高める働きがあります。胃もたれを防ぐためにプラスしました。</p>
+    </div>
+  </div>
+</div>
+
+<!-- VOICE -->
+<section class="voice" id="voice">
+  <p class="section-label reveal">Voice</p>
+  <h2 class="section-title reveal">飼い主様のお声</h2>
+  <div class="voice-grid">
+    <div class="voice-card reveal reveal-delay-1">
+      <p>今までサプリメントやお薬は嫌がって吐き出してしまう子でしたが、このキューブは<strong>おやつ感覚で喜んで食べてくれます！</strong>無添加で手作りという点も、飼い主としてとても安心できます。</p>
+      <div class="voice-user">🐕 トイプードル (8歳) の飼い主様</div>
+    </div>
+    <div class="voice-card reveal reveal-delay-2">
+      <p>シニアになり少し元気がなくなってきたのが気になり始めました。東洋医学の「氣」の考え方に共感し与え始めたところ、<strong>最近は目力も戻り、お散歩も楽しそうに行っています。</strong></p>
+      <div class="voice-user">🐕 柴犬 (12歳) の飼い主様</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <p class="section-label reveal">Q & A</p>
+  <h2 class="section-title reveal">よくあるご質問</h2>
+  <div class="faq-list">
+    <details class="faq-item reveal">
+      <summary>いつ与えればいいですか？</summary>
+      <div class="faq-answer">お薬ではありませんので、決まった時間はありません。いつものご飯のトッピングとして、または食間のおやつやご褒美として与えてあげてください。</div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>保存方法を教えてください。</summary>
+      <div class="faq-answer">防腐剤などの薬品を一切使用していないため、開封後は冷蔵庫で保存し、なるべく早めにお召し上がりください。</div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>お薬を飲んでいても大丈夫ですか？</summary>
+      <div class="faq-answer">本商品は自然の食材を用いた「食品」ですので基本的には問題ありませんが、ご心配な場合はかかりつけの獣医師にご相談ください。</div>
+    </details>
+  </div>
+</section>
+
+<!-- MAKERS -->
+<section class="makers" id="makers">
+  <p class="section-label reveal">Makers</p>
+  <h2 class="section-title reveal">私たちが作っています</h2>
+  <div class="makers-inner">
+    <p class="makers-text reveal">
+      ひとつひとつ想いを込めて<br>
+      手仕事で作り上げたモノをお届けします
+    </p>
+    <div class="makers-profiles">
+      <div class="maker reveal reveal-delay-1">
+        <p class="maker-role">国際中医薬膳管理師</p>
+        <p class="maker-name">本嶋 美保</p>
+        <p class="maker-org">株式会社Laughter<br>DOG POOL 所属</p>
+      </div>
+      <div class="maker reveal reveal-delay-2">
+        <p class="maker-role">フードクリエイター<br>国際中医薬膳管理師</p>
+        <p class="maker-name">磯田 優子</p>
+        <p class="maker-org">atelier.u 代表</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT INFO & USAGE -->
+<section class="product-info" id="info">
+  <p class="section-label reveal">Product Info</p>
+  <h2 class="section-title reveal">商品情報</h2>
+  <table class="info-table reveal">
+    <tr><th>商品名</th><td>氣になるYAKUZEN CUBE</td></tr>
+    <tr><th>原材料</th><td>ハトムギ　陳皮　棗　枸杞子　竜眼肉　山査子<br>ペッツメルトオリゴ糖　柑橘果汁</td></tr>
+    <tr><th>内容量</th><td>35g</td></tr>
+    <tr><th>原産国</th><td>日本（国内手作り生産）</td></tr>
+    <tr><th>販売者</th><td>株式会社Laughter<br>福岡市東区土井2-4-11<br>092-691-8185</td></tr>
+  </table>
+</section>
+
+<section class="usage">
+  <p class="section-label reveal">Usage</p>
+  <h2 class="section-title reveal">1日の使用量目安</h2>
+  <div class="usage-grid">
+    <div class="usage-item reveal reveal-delay-1">
+      <div class="usage-size">🐕 小型犬</div>
+      <div class="usage-amount">1〜2粒/日</div>
+    </div>
+    <div class="usage-item reveal reveal-delay-2">
+      <div class="usage-size">🐕 中型犬</div>
+      <div class="usage-amount">3〜4粒/日</div>
+    </div>
+    <div class="usage-item reveal reveal-delay-3">
+      <div class="usage-size">🐕 大型犬</div>
+      <div class="usage-amount">6〜8粒/日</div>
+    </div>
+  </div>
+  <div class="notes">
+    <p>※お薬ではありません。健康維持を目的とした食品です。<br>
+    手作りでお作りしている為、形状に多少のバラつきがあります。<br>
+    防腐剤等の薬品は一切使用していない為、開封後は冷蔵保存が望ましいです。</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section" id="buy">
+  <div class="bg-watermark parallax" data-speed="0.1">YAKUZEN</div>
+  <div class="section-inner">
+    <h2 class="section-title reveal">愛犬の健康のために</h2>
+    <div class="cta-price reveal">¥2,800 <span>(税込 / 35g)</span></div>
+    <div class="cta-limit reveal">ひとつひとつ手作りのため、数量限定</div>
+    <p class="cta-desc reveal">DOG POOL オンラインストアでお求めいただけます</p>
+    <a href="https://onlinestore.dog-pool.net/page-8049/" class="cta-btn reveal" target="_blank">カートに入れる</a>
+  </div>
+</section>
+
+<!-- FLOATING CTA -->
+<a href="#buy" class="floating-cta" id="floatingCta">
+  🛒 ご購入はこちら
+</a>
+
+<footer>
+  <p>&copy; 株式会社Laughter / DOG POOL &mdash; 福岡市東区土井2-4-11</p>
+</footer>
+
+<script>
+// スクロール時のパララックス（視差）効果。エラーになっても止まらないようtry-catchを使用。
+window.addEventListener('scroll', () => {
+  try {
+    const scrollY = window.scrollY;
+    document.querySelectorAll('.parallax').forEach(el => {
+      const speed = el.getAttribute('data-speed') || 0.1;
+      // 元々付いている translateX(-50%) を維持しつつY軸を動かす
+      el.style.transform = `translateX(-50%) translateY(${scrollY * speed}px)`;
+    });
+  } catch (e) {}
+});
+
+// ナビゲーションバーとフローティングCTAの表示制御
+const nav = document.getElementById('nav');
+const floatingCta = document.getElementById('floatingCta');
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  nav.classList.toggle('visible', scrollY > 400);
+  
+  const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - scrollY;
+  // 一定以上スクロールしたら表示し、最下部の購入エリア付近では非表示にする
+  if (scrollY > 500 && scrollBottom > 300) {
+    floatingCta.classList.add('visible');
+  } else {
+    floatingCta.classList.remove('visible');
+  }
+});
+
+// スクロール時に要素をフワッと表示する (Intersection Observer)
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // 一度表示されたら監視を外すことで軽量化
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
