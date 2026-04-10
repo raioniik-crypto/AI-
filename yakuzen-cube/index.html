@@ -381,16 +381,35 @@
     border-radius: 10px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    background: #fff;
+    background: var(--dp-cream);
     border: 1px solid var(--dp-tan);
     transition: transform .2s ease, box-shadow .2s ease;
     position: relative;
   }
+  .gallery-item::before {
+    content: "画像準備中";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--dp-muted);
+    font-size: 12px;
+    letter-spacing: .1em;
+    z-index: 0;
+  }
+  .gallery-item img,
+  .gallery-item svg { position: relative; z-index: 1; }
   .gallery-item:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
-  .gallery-item svg { width: 100%; height: 100%; display: block; }
+  .gallery-item svg,
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
   .gallery-item .caption {
     position: absolute;
     left: 0; right: 0; bottom: 0;
@@ -870,182 +889,25 @@
 
         <!-- Page 1: Cover -->
         <figure class="gallery-item">
-          <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="リーフレット表紙">
-            <rect width="300" height="400" fill="#fdfcf0"/>
-            <!-- yellow organic blobs -->
-            <path d="M0 0 Q80 40 50 110 Q20 170 90 190 Q20 230 0 190 Z" fill="#eae880"/>
-            <path d="M300 0 L300 160 Q250 150 260 90 Q280 40 240 0 Z" fill="#eae880"/>
-            <path d="M0 400 L0 290 Q50 310 60 360 Q70 400 30 400 Z" fill="#eae880"/>
-            <path d="M300 400 L300 270 Q240 280 250 340 Q290 390 270 400 Z" fill="#eae880"/>
-            <!-- title -->
-            <text x="150" y="150" text-anchor="middle" font-family="'Noto Serif JP', serif" font-size="28" fill="#4a4022" letter-spacing="8">氣になる</text>
-            <!-- planet + hand icon -->
-            <g transform="translate(150 220)" stroke="#4a4022" stroke-width="1.4" fill="none">
-              <circle cx="0" cy="-8" r="18"/>
-              <ellipse cx="0" cy="-8" rx="32" ry="7" transform="rotate(-18)"/>
-              <circle cx="-34" cy="-22" r="1.5" fill="#4a4022"/>
-              <text x="-24" y="-28" font-size="10" fill="#4a4022">✦</text>
-              <text x="28" y="-20" font-size="12" fill="#4a4022">✶</text>
-              <circle cx="36" cy="-2" r="1.5" fill="#4a4022"/>
-              <path d="M-30 22 Q-18 32 -4 28 L30 20 Q38 16 34 10" stroke-linecap="round"/>
-              <path d="M-30 22 Q-34 32 -22 38" stroke-linecap="round"/>
-            </g>
-            <text x="150" y="310" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="22" fill="#4a4022" letter-spacing="8">YAKUZEN</text>
-            <text x="150" y="346" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="26" fill="#4a4022" letter-spacing="12">CUBE</text>
-          </svg>
+          <img src="./images/leaflet-cover.jpg" alt="氣になる YAKUZEN CUBE リーフレット表紙" loading="lazy">
           <figcaption class="caption">表紙</figcaption>
         </figure>
 
         <!-- Page 2: Yellow info leaflet -->
         <figure class="gallery-item">
-          <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="原材料情報">
-            <rect width="300" height="400" fill="#fff7a8"/>
-            <!-- red chinese frame corners -->
-            <g stroke="#c23b2a" stroke-width="1.2" fill="none">
-              <path d="M18 40 L18 56 L34 56 M22 48 L28 48"/>
-              <path d="M282 40 L282 56 L266 56 M278 48 L272 48"/>
-              <path d="M18 360 L18 344 L34 344"/>
-              <path d="M282 360 L282 344 L266 344"/>
-            </g>
-            <!-- heading -->
-            <text x="150" y="90" text-anchor="middle" font-family="'Noto Serif JP', serif" font-size="22" fill="#3c2e23">氣になる YAKUZEN</text>
-            <text x="150" y="116" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="18" fill="#3c2e23" letter-spacing="5">CUBE</text>
-            <!-- sub headline -->
-            <text x="150" y="148" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="10" fill="#6b5a48">世界中医薬学連合会認定の</text>
-            <text x="150" y="162" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="10" fill="#6b5a48">国際中医薬膳管理師が手作り</text>
-            <!-- red banner -->
-            <rect x="40" y="178" width="220" height="18" fill="none" stroke="#c23b2a" stroke-width=".8"/>
-            <text x="150" y="192" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="9" fill="#c23b2a">乳酸菌生産物質が加わったオリゴ糖入り</text>
-            <!-- ingredient rows -->
-            <g font-family="'Noto Sans JP', sans-serif" font-size="9" fill="#3c2e23">
-              <text x="40" y="222">原材料</text><text x="92" y="222">ハトムギ ／ 陳皮 ／ 棗 ／ 枸杞子</text>
-              <text x="92" y="236">竜眼肉 ／ 山査子 ／ オリゴ糖 ／ 柑橘果汁</text>
-              <text x="40" y="258">内容量</text><text x="92" y="258">35g</text>
-              <text x="40" y="276">原産国</text><text x="92" y="276">国内生産</text>
-              <text x="40" y="294">使用量</text>
-              <text x="92" y="294">小型犬  1〜2粒／日</text>
-              <text x="92" y="306">中型犬  3〜4粒／日</text>
-              <text x="92" y="318">大型犬  6〜8粒／日</text>
-              <text x="40" y="340">販売者</text><text x="92" y="340">株式会社 Laughter</text>
-              <text x="92" y="352">福岡市東区土井 2-4-11</text>
-            </g>
-          </svg>
+          <img src="./images/leaflet-info.jpg" alt="原材料・使用量 情報リーフレット" loading="lazy">
           <figcaption class="caption">原材料・使用量</figcaption>
         </figure>
 
         <!-- Page 3: 6 Herbs page with cube photo -->
         <figure class="gallery-item">
-          <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="6種の生薬">
-            <rect width="300" height="400" fill="#fefef5"/>
-            <!-- decorative leaves -->
-            <g fill="#d8e7c0" opacity=".55">
-              <ellipse cx="40" cy="24" rx="18" ry="6" transform="rotate(-20 40 24)"/>
-              <ellipse cx="260" cy="24" rx="18" ry="6" transform="rotate(20 260 24)"/>
-              <ellipse cx="20" cy="380" rx="16" ry="5" transform="rotate(25 20 380)"/>
-              <ellipse cx="280" cy="380" rx="16" ry="5" transform="rotate(-25 280 380)"/>
-            </g>
-            <text x="150" y="40" text-anchor="middle" font-family="'Noto Serif JP', serif" font-size="20" fill="#3c2e23">6種の生薬</text>
-            <!-- cube photo overlay (top-left) -->
-            <g transform="translate(22 60)">
-              <rect x="0" y="0" width="92" height="82" rx="2" fill="#a27045" stroke="#3c2e23" stroke-width=".4"/>
-              <g fill="#8f5a2b" stroke="#3c2e23" stroke-width=".3">
-                <rect x="6"  y="6"  width="18" height="18"/>
-                <rect x="28" y="4"  width="18" height="18" fill="#a26a37"/>
-                <rect x="50" y="8"  width="18" height="18"/>
-                <rect x="72" y="6"  width="18" height="18" fill="#a26a37"/>
-                <rect x="8"  y="28" width="18" height="18" fill="#a26a37"/>
-                <rect x="30" y="26" width="18" height="18"/>
-                <rect x="52" y="30" width="18" height="18" fill="#a26a37"/>
-                <rect x="74" y="28" width="18" height="18"/>
-                <rect x="4"  y="50" width="18" height="18"/>
-                <rect x="26" y="54" width="18" height="18" fill="#a26a37"/>
-                <rect x="48" y="52" width="18" height="18"/>
-                <rect x="70" y="50" width="18" height="18" fill="#a26a37"/>
-              </g>
-            </g>
-            <!-- herb bullet list -->
-            <g font-family="'Noto Sans JP', sans-serif" font-size="9" fill="#3c2e23">
-              <circle cx="128" cy="72" r="2" fill="#3c2e23"/><text x="136" y="75">ハトムギ</text>
-              <text x="180" y="75" fill="#6b5a48">余分な水分を出す</text>
-              <circle cx="128" cy="92" r="2" fill="#3c2e23"/><text x="136" y="95">陳皮</text>
-              <text x="180" y="95" fill="#6b5a48">氣を巡らせる</text>
-              <circle cx="128" cy="112" r="2" fill="#3c2e23"/><text x="136" y="115">大棗</text>
-              <text x="180" y="115" fill="#6b5a48">血を増やし元気に</text>
-              <circle cx="20" cy="168" r="2" fill="#3c2e23"/><text x="28" y="171">枸杞子</text>
-              <text x="72" y="171" fill="#6b5a48">不老長寿の妙薬</text>
-              <circle cx="20" cy="188" r="2" fill="#3c2e23"/><text x="28" y="191">竜眼肉</text>
-              <text x="72" y="191" fill="#6b5a48">消化器官を強く</text>
-              <circle cx="20" cy="208" r="2" fill="#3c2e23"/><text x="28" y="211">山査子</text>
-              <text x="72" y="211" fill="#6b5a48">消化を助ける</text>
-            </g>
-            <!-- plus -->
-            <text x="150" y="244" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#c23b2a">+</text>
-            <!-- additional -->
-            <g font-family="'Noto Sans JP', sans-serif" font-size="8" fill="#3c2e23">
-              <circle cx="20" cy="272" r="2" fill="#3c2e23"/><text x="28" y="275">ペッツメルトオリゴ糖</text>
-              <text x="28" y="288" fill="#6b5a48">善玉菌の「ごはん」となる</text>
-              <text x="28" y="299" fill="#6b5a48">バイオジェニックスオリゴ糖</text>
-              <circle cx="20" cy="320" r="2" fill="#3c2e23"/><text x="28" y="323">柑橘果汁</text>
-              <text x="28" y="336" fill="#6b5a48">気の巡りを促し、</text>
-              <text x="28" y="347" fill="#6b5a48">消化吸収機能を高める</text>
-            </g>
-            <!-- lemon illustration -->
-            <g transform="translate(250 340)">
-              <ellipse cx="0" cy="0" rx="20" ry="14" fill="#f9e47a" stroke="#d8b936" stroke-width=".6"/>
-              <path d="M-20 0 Q-24 -4 -22 -8" stroke="#6a8a38" stroke-width="1.2" fill="none"/>
-              <line x1="-12" y1="0" x2="12" y2="0" stroke="#d8b936" stroke-width=".3"/>
-              <line x1="0" y1="-10" x2="0" y2="10" stroke="#d8b936" stroke-width=".3"/>
-            </g>
-          </svg>
+          <img src="./images/leaflet-herbs.jpg" alt="6種の生薬 解説ページ" loading="lazy">
           <figcaption class="caption">6種の生薬</figcaption>
         </figure>
 
         <!-- Page 4: Concept & makers -->
         <figure class="gallery-item">
-          <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="コンセプト・作り手">
-            <rect width="300" height="400" fill="#fefef5"/>
-            <!-- stars -->
-            <g fill="#f3d35a" opacity=".6">
-              <text x="28" y="28" font-size="14">✦</text>
-              <text x="258" y="34" font-size="12">✶</text>
-            </g>
-            <!-- top text block -->
-            <g font-family="'Noto Sans JP', sans-serif" font-size="8" fill="#3c2e23">
-              <text x="30" y="54">薬膳料理とは中医学の基礎理論に基づいて、</text>
-              <text x="30" y="66">体質や症状、体調、季節などを考慮した</text>
-              <text x="30" y="78">食材選びや調理法で作られる料理のこと。</text>
-              <text x="30" y="98">「生もの」や「焼く」調理方法が禁忌となる</text>
-              <text x="30" y="110">ケースが多いことから、生でもなく焼かずに</text>
-              <text x="30" y="122">美味しく頂ける薬膳を届けたい想いから</text>
-              <text x="30" y="134" font-family="'Noto Serif JP',serif" fill="#c23b2a">生まれたのが『薬膳キューブ』です。</text>
-            </g>
-            <!-- yellow highlight box -->
-            <rect x="24" y="152" width="252" height="100" fill="#fff6a8" stroke="#e8d566" stroke-width=".6"/>
-            <g font-family="'Noto Sans JP', sans-serif" font-size="8" fill="#3c2e23">
-              <text x="36" y="170">中医学においてカラダは「氣・血・水」という</text>
-              <text x="36" y="182">3つの要素によって成り立っています。</text>
-              <text x="36" y="198">この3つのバランスが取れているのが健康な状態。</text>
-              <text x="36" y="214">最も重要だと言われているのが『氣』です。</text>
-              <text x="150" y="238" text-anchor="middle" font-family="'Noto Serif JP',serif" font-size="9" fill="#c23b2a">《 氣が血を作り出し、血は氣に乗って巡る 》</text>
-            </g>
-            <!-- "私たちが作っています" -->
-            <text x="150" y="278" text-anchor="middle" font-family="'Noto Serif JP',serif" font-size="10" fill="#3c2e23">私たちが作っています</text>
-            <!-- two avatar circles -->
-            <g transform="translate(90 320)">
-              <circle cx="0" cy="0" r="24" fill="#efe2c9" stroke="#b48c5a" stroke-width="1"/>
-              <circle cx="0" cy="-4" r="7" fill="#d8b991"/>
-              <path d="M-12 16 Q0 2 12 16 L12 24 L-12 24 Z" fill="#9a6f3e"/>
-              <text x="0" y="46" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="8" fill="#3c2e23">本嶋 美保</text>
-              <text x="0" y="56" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="6" fill="#6b5a48">株式会社 Laughter</text>
-            </g>
-            <g transform="translate(210 320)">
-              <circle cx="0" cy="0" r="24" fill="#efe2c9" stroke="#b48c5a" stroke-width="1"/>
-              <circle cx="0" cy="-4" r="7" fill="#d8b991"/>
-              <path d="M-12 16 Q0 2 12 16 L12 24 L-12 24 Z" fill="#c2875a"/>
-              <text x="0" y="46" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="8" fill="#3c2e23">磯田 優子</text>
-              <text x="0" y="56" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="6" fill="#6b5a48">atelier.u 代表</text>
-            </g>
-          </svg>
+          <img src="./images/leaflet-concept.jpg" alt="コンセプト・作り手 紹介ページ" loading="lazy">
           <figcaption class="caption">コンセプト・作り手</figcaption>
         </figure>
 
