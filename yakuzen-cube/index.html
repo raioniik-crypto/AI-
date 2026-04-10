@@ -4,7 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>氣になる YAKUZEN CUBE ｜ DOG POOL ONLINE STORE</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="氣になるYAKUZEN CUBE — 国際中医薬膳管理師が手作りする愛犬のための薬膳キューブ。6種の生薬配合、無添加・国内生産。DOG POOL（福岡）">
+<meta property="og:title" content="氣になるYAKUZEN CUBE | 愛犬のための手作り薬膳おやつ">
+<meta property="og:description" content="6種の生薬＋乳酸菌オリゴ糖配合。国際中医薬膳管理師がひとつひとつ手作り。">
+<meta property="og:type" content="product">
+<meta property="og:url" content="https://onlinestore.dog-pool.net/page-8049/">
+<meta property="og:image" content="./images/ogp.jpg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --dp-red:       #b8372c;
@@ -682,9 +692,257 @@
     .concept, .herbs, .spec, .makers, .gallery { padding: 28px 22px; }
     .herbs-hero { aspect-ratio: 16 / 7; }
   }
+
+  /* ---------- Mobile fixed CTA bar ---------- */
+  .mobile-cta-bar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 999;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 16px;
+    box-shadow: 0 -4px 16px rgba(60,46,35,.12);
+    transform: translateY(100%);
+    transition: transform .3s ease;
+  }
+  .mobile-cta-bar.visible { transform: translateY(0); }
+  .mobile-cta-btn {
+    display: block;
+    text-align: center;
+    background: linear-gradient(180deg, #d74638, #a82a1e);
+    color: #fff;
+    padding: 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .08em;
+    box-shadow: 0 4px 12px rgba(184,55,44,.3);
+  }
+  @media (max-width: 768px) {
+    .mobile-cta-bar { display: block; }
+  }
+
+  /* ---------- Trust badges ---------- */
+  .trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .trust-badges .badge {
+    display: inline-block;
+    background: var(--dp-cream);
+    border: 1px solid var(--dp-tan);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--dp-muted);
+    letter-spacing: .03em;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    box-shadow: var(--shadow-md);
+  }
+  .faq-list { max-width: 680px; margin: 0 auto; }
+  .faq-item {
+    border-bottom: 1px dashed var(--dp-tan);
+    padding: 0;
+  }
+  .faq-item summary {
+    padding: 16px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dp-ink);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-item summary::after {
+    content: "+";
+    font-size: 20px;
+    color: var(--dp-red);
+    font-weight: 300;
+    transition: transform .2s ease;
+  }
+  .faq-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--dp-muted);
+    padding: 0 0 16px;
+    margin: 0;
+  }
+  @media (max-width: 560px) { .faq { padding: 28px 22px; } }
+
+  /* ---------- Customer voices ---------- */
+  .voices {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    box-shadow: var(--shadow-md);
+  }
+  .voice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .voice-card {
+    background: linear-gradient(180deg, #fffdf5, #fef8e8);
+    border: 1px solid var(--dp-tan);
+    border-radius: 12px;
+    padding: 22px 20px;
+  }
+  .voice-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .voice-meta .breed {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dp-ink);
+  }
+  .voice-meta .owner {
+    font-size: 11px;
+    color: var(--dp-muted);
+  }
+  .voice-card .stars {
+    color: #e8a400;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .voice-card p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--dp-muted);
+    margin: 0;
+  }
+  .voice-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--dp-muted);
+    margin-top: 14px;
+    opacity: .7;
+  }
+  @media (max-width: 960px) { .voice-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .voices { padding: 28px 22px; } }
+
+  /* ---------- Mid / Final CTA ---------- */
+  .mid-cta {
+    text-align: center;
+    padding: 24px 0;
+  }
+  .final-cta {
+    background: linear-gradient(135deg, var(--dp-red-dark), var(--dp-red));
+    border-radius: var(--radius);
+    padding: 48px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+  .final-cta .section-title::after { background: rgba(255,255,255,.4); }
+  .final-cta .section-title .jp { color: #fff; }
+  .final-cta-sub {
+    color: rgba(255,255,255,.8);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .cta-light {
+    background: linear-gradient(180deg, #fff, #f5ede0) !important;
+    color: var(--dp-red-dark) !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,.2) !important;
+  }
+  .cta-light:hover {
+    box-shadow: 0 12px 26px rgba(0,0,0,.3) !important;
+  }
+  .final-cta-note {
+    color: rgba(255,255,255,.5);
+    font-size: 11px;
+    margin-top: 16px;
+  }
+  @media (max-width: 560px) {
+    .final-cta { padding: 32px 22px; }
+  }
+
+  /* ---------- Empathy section ---------- */
+  .empathy {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    box-shadow: var(--shadow-md);
+  }
+  .empathy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .empathy-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff8f6;
+    border: 1px solid #f0ddd8;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .empathy-item p { margin: 0; }
+  .empathy-item .check {
+    color: var(--dp-red);
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .empathy-lead {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--dp-red);
+    font-weight: 500;
+  }
+  @media (max-width: 560px) {
+    .empathy-grid { grid-template-columns: 1fr; }
+    .empathy { padding: 28px 22px; }
+  }
+
+  /* ---------- Accessibility ---------- */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    background: #fff;
+    padding: .5em 1em;
+    z-index: 9999;
+    font-size: .85rem;
+    color: var(--dp-ink);
+  }
+  .skip-link:focus { top: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
+
+<a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
 
 <!-- ========== Header ========== -->
 <header class="site-header">
@@ -692,7 +950,7 @@
     <div class="brand-mark">DP</div>
     <span>DOG POOL ONLINE STORE</span>
   </div>
-  <nav class="site-nav">
+  <nav class="site-nav" aria-label="メインナビゲーション">
     <ul>
       <li><a href="#">HOME</a></li>
       <li><a href="#">お買い物ガイド</a></li>
@@ -733,7 +991,7 @@
   </aside>
 
   <!-- ---------- Main ---------- -->
-  <main class="product">
+  <main class="product" id="main-content">
 
     <!-- Hero -->
     <section class="hero">
@@ -876,6 +1134,11 @@
       </div>
       <div class="hero-info">
         <span class="tag">NEW ／ 手作り薬膳</span>
+        <div class="trust-badges">
+          <span class="badge">🏥 国際中医薬膳管理師監修</span>
+          <span class="badge">🌿 無添加・国内生産</span>
+          <span class="badge">✋ ひとつひとつ手作り</span>
+        </div>
         <h1>氣になる 薬膳キューブ</h1>
         <div class="en-title">YAKUZEN&nbsp;&nbsp;CUBE</div>
         <p class="lead">
@@ -889,6 +1152,33 @@
         </div>
         <a href="#" class="cta">詳しくはこちら</a>
       </div>
+    </section>
+
+    <!-- Empathy -->
+    <section class="empathy">
+      <h2 class="section-title">
+        <span class="jp">こんなお悩みありませんか？</span>
+        <span class="en">Common Concerns</span>
+      </h2>
+      <div class="empathy-grid">
+        <div class="empathy-item">
+          <span class="check">✓</span>
+          <p>シニア犬の健康管理が心配…</p>
+        </div>
+        <div class="empathy-item">
+          <span class="check">✓</span>
+          <p>市販のおやつの添加物が不安…</p>
+        </div>
+        <div class="empathy-item">
+          <span class="check">✓</span>
+          <p>愛犬の体質に合った食事を探している</p>
+        </div>
+        <div class="empathy-item">
+          <span class="check">✓</span>
+          <p>手作りごはんを作る時間がない</p>
+        </div>
+      </div>
+      <p class="empathy-lead">そんな飼い主さまに選ばれています ▼</p>
     </section>
 
     <!-- Concept -->
@@ -916,6 +1206,11 @@
         <p class="quote">《 氣が血を作り出し、血は氣に乗って全身を巡ります 》</p>
       </div>
     </section>
+
+    <!-- Mid CTA #1 -->
+    <div class="mid-cta">
+      <a href="https://onlinestore.dog-pool.net/page-8049/" class="cta" target="_blank" rel="noopener">まずは試してみる</a>
+    </div>
 
     <!-- Leaflet Gallery -->
     <section class="gallery" id="gallery-top">
@@ -1189,6 +1484,46 @@
       </div>
     </section>
 
+    <!-- Customer voices -->
+    <section class="voices">
+      <h2 class="section-title">
+        <span class="jp">愛犬家の皆さまから嬉しいお声</span>
+        <span class="en">Customer Voices</span>
+      </h2>
+      <div class="voice-grid">
+        <div class="voice-card">
+          <div class="voice-meta">
+            <span class="breed">🐩 トイプードル・10歳</span>
+            <span class="owner">40代女性</span>
+          </div>
+          <div class="stars">★★★★★</div>
+          <p>食が細くなってきた子が、このキューブだけは喜んで食べます。続けて3ヶ月、毛艶も良くなった気がします。</p>
+        </div>
+        <div class="voice-card">
+          <div class="voice-meta">
+            <span class="breed">🐕 柴犬・7歳</span>
+            <span class="owner">30代男性</span>
+          </div>
+          <div class="stars">★★★★★</div>
+          <p>無添加で安心してあげられます。薬膳という発想が新しくて、これからも続けてみたいと思いました。</p>
+        </div>
+        <div class="voice-card">
+          <div class="voice-meta">
+            <span class="breed">🐕 ミニチュアダックス・12歳</span>
+            <span class="owner">50代女性</span>
+          </div>
+          <div class="stars">★★★★★</div>
+          <p>シニアの子にも安心してあげられます。ひとつひとつ手作りの温かみを感じる商品です。</p>
+        </div>
+      </div>
+      <p class="voice-note">※ 個人の感想であり、効果を保証するものではありません。</p>
+    </section>
+
+    <!-- Mid CTA #2 -->
+    <div class="mid-cta">
+      <a href="https://onlinestore.dog-pool.net/page-8049/" class="cta" target="_blank" rel="noopener">オンラインストアで購入する</a>
+    </div>
+
     <!-- Spec -->
     <section class="spec">
       <h2 class="section-title">
@@ -1311,6 +1646,50 @@
       </p>
     </section>
 
+    <!-- FAQ -->
+    <section class="faq">
+      <h2 class="section-title">
+        <span class="jp">よくある質問</span>
+        <span class="en">FAQ</span>
+      </h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>どんな犬種・年齢でも食べられますか？</summary>
+          <p>はい、全犬種・全年齢に対応しています。子犬からシニア犬まで安心してお与えいただけます。</p>
+        </details>
+        <details class="faq-item">
+          <summary>アレルギーが心配ですが大丈夫ですか？</summary>
+          <p>主原料はハトムギ、陳皮、棗、枸杞子、竜眼肉、山査子です。特定のアレルギーをお持ちの場合は、原材料をご確認の上、かかりつけの獣医師にご相談ください。</p>
+        </details>
+        <details class="faq-item">
+          <summary>どのくらいで効果を実感できますか？</summary>
+          <p>個体差がありますが、1〜3ヶ月程度の継続をおすすめしています。お薬ではなく健康維持を目的とした食品です。</p>
+        </details>
+        <details class="faq-item">
+          <summary>保存方法を教えてください</summary>
+          <p>開封後は冷蔵保存をお願いします。防腐剤を一切使用していないため、お早めにお召し上がりください。</p>
+        </details>
+        <details class="faq-item">
+          <summary>普段のごはんと一緒にあげてもいいですか？</summary>
+          <p>はい、おやつやトッピングとしてお使いいただけます。ドライフードに混ぜたり、そのままおやつとしてお与えください。</p>
+        </details>
+        <details class="faq-item">
+          <summary>定期購入はありますか？</summary>
+          <p>DOG POOLオンラインストアにて定期便をご用意しています。詳しくはオンラインストアをご確認ください。</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+      <h2 class="section-title" style="color:#fff">
+        <span class="jp">愛犬の健康のために、今日から始めませんか？</span>
+      </h2>
+      <p class="final-cta-sub">¥2,800（税込）／ 35g ／ 送料別途</p>
+      <a href="https://onlinestore.dog-pool.net/page-8049/" class="cta cta-light" target="_blank" rel="noopener">オンラインストアへ</a>
+      <p class="final-cta-note">※ お薬ではありません。健康維持を目的とした食品です。</p>
+    </section>
+
   </main>
 </div>
 
@@ -1319,6 +1698,44 @@
   <span class="en">DOG POOL ONLINE STORE</span>
   © 株式会社 Laughter ／ 福岡市東区土井 2-4-11 ／ TEL 092-691-8185
 </footer>
+
+<div class="mobile-cta-bar" id="mobileCta">
+  <a href="https://onlinestore.dog-pool.net/page-8049/" class="mobile-cta-btn" target="_blank" rel="noopener">
+    購入はこちら ¥2,800
+  </a>
+</div>
+
+<script>
+  (function () {
+    var mobileCta = document.getElementById('mobileCta');
+    if (!mobileCta) return;
+    window.addEventListener('scroll', function () {
+      mobileCta.classList.toggle('visible', window.scrollY > 500);
+    }, { passive: true });
+  })();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "氣になるYAKUZEN CUBE",
+  "brand": {"@type": "Brand", "name": "DOG POOL"},
+  "description": "国際中医薬膳管理師が手作りする犬用薬膳キューブ。6種の生薬配合。",
+  "offers": {
+    "@type": "Offer",
+    "price": "2800",
+    "priceCurrency": "JPY",
+    "availability": "https://schema.org/InStock",
+    "seller": {"@type": "Organization", "name": "DOG POOL"}
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "株式会社Laughter",
+    "address": {"@type": "PostalAddress", "addressLocality": "福岡市東区", "addressCountry": "JP"}
+  }
+}
+</script>
 
 </body>
 </html>
