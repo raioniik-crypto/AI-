@@ -1,52 +1,73 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Annotation } from '@/types/form-guide';
 import AnnotationOverlay from './annotation-overlay';
 
 interface AnnotatedImageProps {
   src: string;
   annotations: Annotation[];
-  initialWidth?: number;
-  initialHeight?: number;
   alt?: string;
+}
+
+interface RenderedSize {
+  width: number;
+  height: number;
 }
 
 export default function AnnotatedImage({
   src,
   annotations,
-  initialWidth,
-  initialHeight,
   alt = '注釈付きスクリーンショット',
 }: AnnotatedImageProps): JSX.Element {
-  const [dimensions, setDimensions] = useState<{
-    width: number;
-    height: number;
-  } | null>(
-    initialWidth && initialHeight
-      ? { width: initialWidth, height: initialHeight }
-      : null,
-  );
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [renderedSize, setRenderedSize] = useState<RenderedSize | null>(null);
+
+  // Track the <img>'s actual rendered rect — not its natural resolution — so
+  // the overlay always aligns with what the user sees, regardless of the
+  // image being scaled down to fit its container or the window being resized.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+
+    const measure = (): void => {
+      const rect = img.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        setRenderedSize({ width: rect.width, height: rect.height });
+      }
+    };
+
+    measure();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+
+    const observer = new ResizeObserver(() => measure());
+    observer.observe(img);
+    return () => observer.disconnect();
+  }, [src]);
 
   return (
     <figure className="relative inline-block max-w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         className="block h-auto max-w-full"
         onLoad={(event) => {
-          const target = event.currentTarget;
-          setDimensions({
-            width: target.naturalWidth,
-            height: target.naturalHeight,
-          });
+          const rect = event.currentTarget.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            setRenderedSize({ width: rect.width, height: rect.height });
+          }
         }}
       />
-      {dimensions ? (
+      {renderedSize ? (
         <AnnotationOverlay
-          width={dimensions.width}
-          height={dimensions.height}
+          width={renderedSize.width}
+          height={renderedSize.height}
           annotations={annotations}
         />
       ) : null}

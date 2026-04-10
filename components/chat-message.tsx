@@ -24,8 +24,6 @@ export default function ChatMessage({ message }: ChatMessageProps): JSX.Element 
         <AnnotatedImage
           src={message.imageDataUrl}
           annotations={message.annotations}
-          initialWidth={message.imageWidth}
-          initialHeight={message.imageHeight}
         />
         <p className="text-sm text-slate-700">{message.explanation}</p>
         <AnnotationLegend annotations={message.annotations} />

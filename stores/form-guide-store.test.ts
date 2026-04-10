@@ -44,8 +44,6 @@ describe('useFormGuideStore', () => {
       id: 'a1',
       role: 'assistant',
       imageDataUrl: 'data:image/png;base64,AAA',
-      imageWidth: 800,
-      imageHeight: 600,
       annotations: [sampleAnnotation],
       explanation: 'Nameに太郎を入れます',
     });
