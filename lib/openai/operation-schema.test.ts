@@ -148,4 +148,96 @@ describe('sanitizeOperationGuideResult', () => {
     );
     expect(result.steps).toEqual([]);
   });
+
+  it('rescales 0-1 normalized bbox values into 0-1000', () => {
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
+        ],
+      }),
+    );
+    expect(result.steps).toHaveLength(1);
+    const step = result.steps[0];
+    expect(step).toBeDefined();
+    if (!step) return;
+    expect(step.x).toBe(100);
+    expect(step.y).toBe(200);
+    expect(step.width).toBe(300);
+    expect(step.height).toBe(400);
+  });
+
+  it('rescales even when values sit at the 1.0 edge', () => {
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0, y: 0, width: 1, height: 1 },
+        ],
+      }),
+    );
+    const step = result.steps[0];
+    expect(step).toBeDefined();
+    if (!step) return;
+    expect(step.x).toBe(0);
+    expect(step.y).toBe(0);
+    expect(step.width).toBe(1000);
+    expect(step.height).toBe(1000);
+  });
+
+  it('rescales across multiple steps when all stay in 0-1', () => {
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, id: 's1', x: 0.05, y: 0.1, width: 0.2, height: 0.15 },
+          { ...baseStep, id: 's2', x: 0.5, y: 0.5, width: 0.3, height: 0.25 },
+        ],
+      }),
+    );
+    expect(result.steps).toHaveLength(2);
+    const [first, second] = result.steps;
+    expect(first?.x).toBe(50);
+    expect(first?.width).toBe(200);
+    expect(second?.x).toBe(500);
+    expect(second?.height).toBe(250);
+  });
+
+  it('does not rescale when at least one value exceeds 1', () => {
+    // 800 is a valid 0-1000 value; presence of any > 1 value means the
+    // model is using the 0-1000 scale and the 0.5 is just a literal
+    // half-pixel (which will then be treated as regular clamping input).
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 0.5, y: 0.5, width: 800, height: 0.5 },
+        ],
+      }),
+    );
+    // width=800 survives, height=0.5 is dropped by degenerate check? No,
+    // 0.5 > 0 so it passes. The step is kept as-is (no scaling applied).
+    expect(result.steps).toHaveLength(1);
+    const step = result.steps[0];
+    expect(step).toBeDefined();
+    if (!step) return;
+    expect(step.x).toBe(0.5);
+    expect(step.y).toBe(0.5);
+    expect(step.width).toBe(800);
+    expect(step.height).toBe(0.5);
+  });
+
+  it('does not rescale already 0-1000 values', () => {
+    const result = sanitizeOperationGuideResult(
+      makeResult({
+        steps: [
+          { ...baseStep, x: 100, y: 200, width: 300, height: 150 },
+        ],
+      }),
+    );
+    const step = result.steps[0];
+    expect(step).toBeDefined();
+    if (!step) return;
+    expect(step.x).toBe(100);
+    expect(step.y).toBe(200);
+    expect(step.width).toBe(300);
+    expect(step.height).toBe(150);
+  });
 });
